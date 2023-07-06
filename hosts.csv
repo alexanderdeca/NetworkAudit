@@ -1,0 +1,8 @@
+ip_address,username,password,name,platform
+10.255.255.65,admin,password,ms01,iosxe
+10.255.255.63,admin,password,r1,iosxe
+10.255.255.62,admin,password,r2,iosxe
+10.255.255.61,admin,password,cs01,iosxe
+10.255.255.60,admin,password,cs02,iosxe
+10.255.255.64,admin,password,as01,iosxe
+10.255.255.66,admin,password,as02,iosxe
