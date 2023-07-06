@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+
+# created by Alexander Deca - Deca Consulting 06/07/2023
+# please note there is a requirements file -> pip install -r requirements.txt
+
 import csv
 from scrapli.driver.core import IOSXEDriver, NXOSDriver, IOSXRDriver
 import networkx as nx
