@@ -13,7 +13,7 @@ logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime
 logger = logging.getLogger(__name__)
 
 # Define the CSV file path containing the device details
-csv_file = 'hosts_v2.csv'
+csv_file = 'hosts_telio.csv'
 
 # Create a list to store the devices
 devices = []
@@ -52,7 +52,7 @@ for device in devices:
             hostname = device["name"]
             
             # Create a directory with the hostname if it doesn't exist
-            output_directory = f"{hostname}_output"
+            output_directory = f"output/{hostname}_output"
             if not os.path.exists(output_directory):
                 os.makedirs(output_directory)
             
@@ -63,7 +63,7 @@ for device in devices:
                 header = next(commands_reader)
                 for command_row in commands_reader:
                     commands.append(command_row[0])
-            print(commands)
+          
             # Execute each command and save the output or error message
             for command in commands:
                 command_result = conn.send_command(command)

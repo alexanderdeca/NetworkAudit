@@ -5,3 +5,5 @@ test.py
 testscrapli.py
 hosts_telio.csv
 hosts_v2.csv
+old/
+output/
