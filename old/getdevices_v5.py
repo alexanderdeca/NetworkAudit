@@ -3,12 +3,24 @@
 # created by Alexander Deca - Deca Consulting 06/07/2023
 # please note there is a requirements file -> pip install -r requirements.txt
 
+#!/usr/bin/env python3
+
+# created by Alexander Deca - Deca Consulting 06/07/2023
+# please note there is a requirements file -> pip install -r requirements.txt
+
+#!/usr/bin/env python3
+
+# created by Alexander Deca - Deca Consulting 06/07/2023
+# please note there is a requirements file -> pip install -r requirements.txt
+
 import csv
 import logging
 from scrapli.driver.core import IOSXEDriver, NXOSDriver, IOSXRDriver
-import networkx as nx
-import matplotlib.pyplot as plt
-from ntc_templates.parse import parse_output
+from py4j.java_gateway import JavaGateway
+gateway = JavaGateway(classpath="/Users/adeca/gephi-toolkit-0.10.0-all.jar") 
+import tempfile
+import shutil
+import os
 
 logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 # logging.basicConfig(level=logging.INFO)
@@ -80,7 +92,9 @@ def get_neighbors(device):
     return neighbors
 
 def build_network_topology(devices):
-    G = nx.Graph()
+    gateway = JavaGateway()  # Start the Java Gateway
+    gephi = gateway.jvm.org.gephi.project.GephiProject()  # Create a Gephi project
+
     added_devices = set()  # Set to store unique device names
 
     for device in devices:
@@ -89,10 +103,11 @@ def build_network_topology(devices):
         # Extract the hostname portion of the device name and convert to lowercase
         hostname = device["name"].split(".")[0].lower()
 
-        # Add the device to the graph if it hasn't been added before
-        if hostname not in added_devices:
-            G.add_node(hostname)
-            added_devices.add(hostname)
+        # Add the device as a node in Gephi
+        gephi.addNode(hostname)
+
+        # Add the device to the set of added devices
+        added_devices.add(hostname)
 
         for neighbor in neighbors:
             remote_device = neighbor["neighbor"].split(".")[0].lower()  # Extract and convert neighbor's hostname to lowercase
@@ -103,28 +118,22 @@ def build_network_topology(devices):
             remote_interface_parts = neighbor["neighbor_interface"].split()
             remote_interface = " ".join(remote_interface_parts)
 
-            # Add the edge between devices if the remote device hasn't been added before
-            if remote_device not in added_devices:
-                G.add_node(remote_device)
-                added_devices.add(remote_device)
-            G.add_edge(hostname, remote_device, local_interface=local_interface, remote_interface=remote_interface)
+            # Add the remote device as a node in Gephi
+            gephi.addNode(remote_device)
 
-    return G
+            # Add an edge between the devices
+            gephi.addEdge(hostname, remote_device, local_interface, remote_interface)
 
-def visualize_network_topology(network_topology):
-    pos = nx.shell_layout(network_topology)
-    plt.figure(figsize=(20, 12))
-    nx.draw(network_topology, pos, with_labels=True, node_size=500, node_color="lightblue", font_size=8)
+    # Export the Gephi project to a temporary file
+    temp_dir = tempfile.mkdtemp()
+    temp_file = os.path.join(temp_dir, "network.gephi")
+    gephi.saveProject(temp_file)
 
-    edge_labels = nx.get_edge_attributes(network_topology, "local_interface")
-    nx.draw_networkx_edge_labels(network_topology, pos, edge_labels=edge_labels, font_size=6)
+    # Open the temporary file in Gephi for visualization
+    os.system(f"gephi {temp_file}")
 
-    for u, v, attr in network_topology.edges(data=True):
-        x = pos[u][0] * 0.25 + pos[v][0] * 0.75
-        y = pos[u][1] * 0.25 + pos[v][1] * 0.75
-        plt.text(x, y, attr["local_interface"], ha="center", va="center", fontsize=6, color="red")
-
-    plt.show()
+    # Clean up the temporary directory
+    shutil.rmtree(temp_dir)
 
 def main():
     devices = []
@@ -133,8 +142,7 @@ def main():
         for row in csv_reader:
             devices.append(row)
 
-    network_topology = build_network_topology(devices)
-    visualize_network_topology(network_topology)
+    build_network_topology(devices)
 
 if __name__ == "__main__":
     main()

@@ -8,10 +8,9 @@ import logging
 from scrapli.driver.core import IOSXEDriver, NXOSDriver, IOSXRDriver
 import networkx as nx
 import matplotlib.pyplot as plt
-from ntc_templates.parse import parse_output
+import re
 
-logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
-# logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def establish_connection(device):
@@ -40,7 +39,7 @@ def establish_connection(device):
         else:
             logger.error(f"Connection to {device['name']} is not alive.")
     except Exception as e:
-        logger.error(f"Error occurred while establishing connection with {device['ip_address']}: {str(e)}")
+        logger.error(f"Error occurred while establishing connection with {device['name']}: {str(e)}")
 
     return None
 
@@ -52,24 +51,33 @@ def get_neighbors(device):
     conn = establish_connection(device)
     if not conn:
         return []
-    if device["platform"] == "iosxe":
-        ntc = "cisco_ios"
-    elif device["platform"] == "nxos":
-        ntc = "cisco_nxos"
-    elif device["platform"] == "iosxr":
-        ntc = "cisco_ios_xr"
-    else:
-        logger.error(f"Unsupported platform: {device['platform']}")
 
     neighbors = []
     try:
         show_command = "show cdp neighbors"
         response_neighbors = conn.send_command(show_command).result
-        parsed_output = parse_output(platform=ntc, command="show cdp neighbors", data=response_neighbors)
-        if parsed_output is not None:
-            for item in parsed_output:
-                print(item)
-                neighbors.append(item)
+        lines = response_neighbors.splitlines()
+
+        # Find the index of the line starting with "Device ID"
+        start_index = next((i for i, line in enumerate(lines) if line.startswith("Device ID")), None)
+        if start_index is not None:
+            for line in lines[start_index + 1:]:
+                line = line.strip()
+                if line and not line.startswith("Total"):
+                    columns = re.split(r"\s{2,}|\t", line)
+                    print(len(columns))
+                    if len(columns) == 5:
+                        columns.insert(4, 'unknown')  # Insert an empty entry at the 4th place
+                        print(columns)
+                    neighbor = {
+                        "neighbor": columns[0],
+                        "local_interface": columns[1],
+                        "hold_time": columns[2],
+                        "capability": columns[3],
+                        "platform": columns[4],
+                        "neighbor_interface": columns[5],
+                    }
+                    neighbors.append(neighbor)
         else:
             logger.warning("No neighbor information found.")
 
@@ -113,8 +121,8 @@ def build_network_topology(devices):
 
 def visualize_network_topology(network_topology):
     pos = nx.shell_layout(network_topology)
-    plt.figure(figsize=(20, 12))
-    nx.draw(network_topology, pos, with_labels=True, node_size=500, node_color="lightblue", font_size=8)
+    plt.figure(figsize=(12, 8))
+    nx.draw(network_topology, pos, with_labels=True, node_size=800, node_color="lightblue", font_size=8)
 
     edge_labels = nx.get_edge_attributes(network_topology, "local_interface")
     nx.draw_networkx_edge_labels(network_topology, pos, edge_labels=edge_labels, font_size=6)
@@ -128,7 +136,7 @@ def visualize_network_topology(network_topology):
 
 def main():
     devices = []
-    with open("hosts_telio.csv", "r") as file:
+    with open("hosts.csv", "r") as file:
         csv_reader = csv.DictReader(file)
         for row in csv_reader:
             devices.append(row)

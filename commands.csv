@@ -1,0 +1,13 @@
+command
+show running-config
+show version
+show interface status
+show spanning-tree summary
+show spanning-tree blockedports
+show vlan
+show cdp neighbor
+show logging
+show ip arp inspection
+show ip dhcp snooping
+show ip igmp snooping mrouter
+show ip igmp snooping groups

@@ -3,10 +3,15 @@
 # created by Alexander Deca - Deca Consulting 06/07/2023
 # please note there is a requirements file -> pip install -r requirements.txt
 
+#!/usr/bin/env python3
+
+# created by Alexander Deca - Deca Consulting 06/07/2023
+# please note there is a requirements file -> pip install -r requirements.txt
+
 import csv
 import logging
 from scrapli.driver.core import IOSXEDriver, NXOSDriver, IOSXRDriver
-import networkx as nx
+import graph_tool.all as gt
 import matplotlib.pyplot as plt
 from ntc_templates.parse import parse_output
 
@@ -80,8 +85,9 @@ def get_neighbors(device):
     return neighbors
 
 def build_network_topology(devices):
-    G = nx.Graph()
+    G = gt.Graph(directed=False)
     added_devices = set()  # Set to store unique device names
+    device_name_to_vertex = {}  # Mapping of device names to graph vertices
 
     for device in devices:
         neighbors = get_neighbors(device)
@@ -91,7 +97,8 @@ def build_network_topology(devices):
 
         # Add the device to the graph if it hasn't been added before
         if hostname not in added_devices:
-            G.add_node(hostname)
+            v = G.add_vertex()
+            device_name_to_vertex[hostname] = v
             added_devices.add(hostname)
 
         for neighbor in neighbors:
@@ -105,24 +112,20 @@ def build_network_topology(devices):
 
             # Add the edge between devices if the remote device hasn't been added before
             if remote_device not in added_devices:
-                G.add_node(remote_device)
+                v = G.add_vertex()
+                device_name_to_vertex[remote_device] = v
                 added_devices.add(remote_device)
-            G.add_edge(hostname, remote_device, local_interface=local_interface, remote_interface=remote_interface)
+
+            u = device_name_to_vertex[hostname]
+            v = device_name_to_vertex[remote_device]
+            G.add_edge(u, v)
 
     return G
 
 def visualize_network_topology(network_topology):
-    pos = nx.shell_layout(network_topology)
+    pos = gt.sfdp_layout(network_topology)  # Layout algorithm for Graph-tool
     plt.figure(figsize=(20, 12))
-    nx.draw(network_topology, pos, with_labels=True, node_size=500, node_color="lightblue", font_size=8)
-
-    edge_labels = nx.get_edge_attributes(network_topology, "local_interface")
-    nx.draw_networkx_edge_labels(network_topology, pos, edge_labels=edge_labels, font_size=6)
-
-    for u, v, attr in network_topology.edges(data=True):
-        x = pos[u][0] * 0.25 + pos[v][0] * 0.75
-        y = pos[u][1] * 0.25 + pos[v][1] * 0.75
-        plt.text(x, y, attr["local_interface"], ha="center", va="center", fontsize=6, color="red")
+    gt.graph_draw(network_topology, pos=pos, vertex_text=network_topology.vertex_index, vertex_size=10, edge_pen_width=1.2)
 
     plt.show()
 

@@ -1,2 +1,7 @@
 .envrc
 telio-audit.code-workspace
+error.log
+test.py
+testscrapli.py
+hosts_telio.csv
+hosts_v2.csv

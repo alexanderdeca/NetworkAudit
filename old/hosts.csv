@@ -1,0 +1,8 @@
+ip_address,username,password,name,platform
+10.255.255.63,adeca,G00k$Twul2,r1,iosxe
+10.255.255.64,adeca,G00k$Twul2,as01,iosxe
+10.255.255.66,adeca,G00k$Twul2,as02,iosxe
+10.255.255.62,adeca,G00k$Twul2,r2,iosxe
+10.255.255.61,adeca,G00k$Twul2,cs01,iosxe
+10.255.255.60,adeca,G00k$Twul2,cs02,iosxe
+10.255.255.65,adeca,G00k$Twul2,ms01,iosxe
