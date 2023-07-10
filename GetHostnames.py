@@ -12,7 +12,7 @@ logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime
 logger = logging.getLogger(__name__)
 
 # Define the CSV file path containing the device details
-csv_file = 'hosts_v2.csv'
+csv_file = 'hosts_telio.csv'
 
 # Create a list to store the devices
 devices = []
