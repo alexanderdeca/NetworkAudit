@@ -7,3 +7,6 @@ hosts_telio.csv
 hosts_v2.csv
 old/
 output/
+
+telio_device_info.xlsx
+~$telio_device_info.xlsx
