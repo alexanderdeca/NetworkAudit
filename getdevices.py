@@ -97,11 +97,14 @@ def build_network_topology(devices):
         for neighbor in neighbors:
             remote_device = neighbor["neighbor"].split(".")[0].lower()  # Extract and convert neighbor's hostname to lowercase
 
-            local_interface_parts = neighbor["local_interface"].split()
-            local_interface = " ".join(local_interface_parts)
+            local_interface = neighbor["local_interface"]
+            # local_interface_parts = neighbor["local_interface"].split()
+            # print(local_interface_parts)
+            # local_interface = " ".join(local_interface_parts)
 
-            remote_interface_parts = neighbor["neighbor_interface"].split()
-            remote_interface = " ".join(remote_interface_parts)
+            remote_interface = neighbor["neighbor_interface"]
+            # remote_interface_parts = neighbor["neighbor_interface"].split()
+            # remote_interface = " ".join(remote_interface_parts)
 
             # Add the edge between devices if the remote device hasn't been added before
             if remote_device not in added_devices:
@@ -116,7 +119,7 @@ def visualize_network_topology(network_topology):
     plt.figure(figsize=(20, 12))
     nx.draw(network_topology, pos, with_labels=True, node_size=500, node_color="lightblue", font_size=8)
 
-    edge_labels = nx.get_edge_attributes(network_topology, "local_interface")
+    edge_labels = nx.get_edge_attributes(network_topology, "remote_interface")
     nx.draw_networkx_edge_labels(network_topology, pos, edge_labels=edge_labels, font_size=6)
 
     for u, v, attr in network_topology.edges(data=True):

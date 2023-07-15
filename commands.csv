@@ -11,3 +11,7 @@ show ip arp inspection
 show ip dhcp snooping
 show ip igmp snooping mrouter
 show ip igmp snooping groups
+show errdisable recovery
+show mac address-table
+show switch
+show run | i provision

@@ -4,7 +4,6 @@
 # please note there is a requirements file -> pip install -r requirements.txt
 
 import os
-import re
 import csv
 from ntc_templates.parse import parse_output
 

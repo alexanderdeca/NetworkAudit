@@ -74,7 +74,7 @@ for device in devices:
                     else:
                         output_file.write(command_result.result)
             
-            logger.info(f"Commands executed successfully for {device['name']}. Output saved in {output_directory}.")
+                logger.info(f"Commands executed successfully for {device['name']}. Output saved in {output_directory}.")
         else:
             logger.error(f"Connection to {device['name']} is not alive.")
     except Exception as e:
