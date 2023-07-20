@@ -98,24 +98,25 @@ def build_network_topology(devices):
             remote_device = neighbor["neighbor"].split(".")[0].lower()  # Extract and convert neighbor's hostname to lowercase
 
             local_interface = neighbor["local_interface"]
-            # local_interface_parts = neighbor["local_interface"].split()
-            # print(local_interface_parts)
-            # local_interface = " ".join(local_interface_parts)
-
             remote_interface = neighbor["neighbor_interface"]
-            # remote_interface_parts = neighbor["neighbor_interface"].split()
-            # remote_interface = " ".join(remote_interface_parts)
 
             # Add the edge between devices if the remote device hasn't been added before
             if remote_device not in added_devices:
                 G.add_node(remote_device)
                 added_devices.add(remote_device)
-            G.add_edge(hostname, remote_device, local_interface=local_interface, remote_interface=remote_interface)
+
+            # Check if the edge already exists, if yes, append the interface to the existing list
+            if G.has_edge(hostname, remote_device):
+                G[hostname][remote_device]["local_interface"].append(local_interface)
+                G[hostname][remote_device]["remote_interface"].append(remote_interface)
+            else:
+                G.add_edge(hostname, remote_device, local_interface=[local_interface], remote_interface=[remote_interface])
 
     return G
 
+
 def visualize_network_topology(network_topology):
-    pos = nx.shell_layout(network_topology)
+    pos = nx.circular_layout(network_topology)
     plt.figure(figsize=(20, 12))
     nx.draw(network_topology, pos, with_labels=True, node_size=500, node_color="lightblue", font_size=8)
 

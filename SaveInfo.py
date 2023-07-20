@@ -2,12 +2,17 @@
 
 # created by Alexander Deca - Deca Consulting 06/07/2023
 # please note there is a requirements file -> pip install -r requirements.txt
-# this script fetches the correct hostname and updates the input csv file
+# this script iterates over a # of commands that will be executed on the network
+# device and saves the output to txt file
 
 import csv
 import logging
 import os
 from scrapli.driver.core import IOSXEDriver, NXOSDriver, IOSXRDriver
+from datetime import datetime
+
+now = datetime.now()
+date = now.strftime("%Y-%m-%d")
 
 logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -52,7 +57,7 @@ for device in devices:
             hostname = device["name"]
             
             # Create a directory with the hostname if it doesn't exist
-            output_directory = f"output/{hostname}_output"
+            output_directory = f"output_{date}/{hostname}_output"
             if not os.path.exists(output_directory):
                 os.makedirs(output_directory)
             

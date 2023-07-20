@@ -15,3 +15,6 @@ show errdisable recovery
 show mac address-table
 show switch
 show run | i provision
+show etherchannel summary
+show log | i BPDU
+show log | i %SW_MATM-4-MACFLAP_NOTIF
