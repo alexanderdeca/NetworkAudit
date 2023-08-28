@@ -133,7 +133,7 @@ def visualize_network_topology(network_topology):
 
 def main():
     devices = []
-    with open("hosts_telio.csv", "r") as file:
+    with open("hosts.csv", "r") as file:
         csv_reader = csv.DictReader(file)
         for row in csv_reader:
             devices.append(row)

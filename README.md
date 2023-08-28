@@ -84,8 +84,9 @@ This script connects to network devices, executes commands, and saves the comman
 This script parses version information from network devices' show version commands and saves the results in a CSV file.
 
 **Usage:**
-1. Place show command output files in the `output_YYYY-MM-DD` directory.
-2. Run the script:
+1. Modify the `directory_path` variable in the script 
+2. Place show command output files in the `directory_path` directory
+3. Run the script:
    ```
    python SaveVersion.py
    ```
