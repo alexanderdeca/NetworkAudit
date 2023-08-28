@@ -2,6 +2,7 @@
 
 # created by Alexander Deca - Deca Consulting 06/07/2023
 # please note there is a requirements file -> pip install -r requirements.txt
+# csv outout file format : File,Hostname,Platform,Software Version,Software Image
 
 import os
 import csv
@@ -40,7 +41,7 @@ def review_directory(directory, output_file):
                         writer.writerow([file, hostname, platform, software_version, software_image])
 
 # Specify the directory path containing the subdirectories with show command output
-directory_path = "output"
+directory_path = "output_2023-07-25"
 
 # Specify the output CSV file path
 output_csv_file = "SaveVersion.csv"

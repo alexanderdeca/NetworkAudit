@@ -2,6 +2,7 @@
 
 # created by Alexander Deca - Deca Consulting 06/07/2023
 # please note there is a requirements file -> pip install -r requirements.txt
+# input csv file format is ip_address,username,password,name,platform
 
 import csv
 import logging

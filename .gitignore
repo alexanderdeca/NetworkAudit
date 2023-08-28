@@ -1,12 +1,11 @@
 .envrc
 telio-audit.code-workspace
-error.log
 test.py
 testscrapli.py
-hosts_telio.csv
-hosts_v2.csv
+*.csv
 old/
 output*/
 
-telio_device_info.xlsx
-~$telio_device_info.xlsx
+*.xlsx
+*.log
+diff/*.zip

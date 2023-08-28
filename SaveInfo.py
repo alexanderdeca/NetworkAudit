@@ -4,6 +4,7 @@
 # please note there is a requirements file -> pip install -r requirements.txt
 # this script iterates over a # of commands that will be executed on the network
 # device and saves the output to txt file
+# input csv file format is ip_address,username,password,name,platform
 
 import csv
 import logging

@@ -64,8 +64,8 @@ def compare_directories(directory1, directory2, parent_diff_directory):
             logging.error(f"File '{file}' is only present in directory 2.")
 
 # Main directories to compare
-main_directory1 = 'output'
-main_directory2 = 'output_2023-07-20'
+main_directory1 = 'output_2023-07-25'
+main_directory2 = 'output_2023-07-25-8h'
 
 # Directory to store the diff files
 parent_diff_directory = 'diff'
