@@ -5,7 +5,6 @@ testscrapli.py
 *.csv
 old/
 output*/
-
 *.xlsx
 *.log
 diff/*.zip
