@@ -1,0 +1,21 @@
+command
+show running-config
+show version
+show interface status
+show spanning-tree summary
+show spanning-tree blockedports
+show vlan
+show cdp neighbor
+show logging
+show ip arp inspection
+show ip dhcp snooping
+show ip igmp snooping mrouter
+show ip igmp snooping groups
+show errdisable recovery
+show mac address-table
+show switch
+show run | i provision
+show etherchannel summary
+show log | i BPDU
+show log | i %SW_MATM-4-MACFLAP_NOTIF
+show cdp neighbors detail | i 10.29.|2.4
