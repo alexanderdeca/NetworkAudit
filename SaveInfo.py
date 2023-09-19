@@ -71,7 +71,7 @@ for device in devices:
             hostname = device["name"]
             
             # Create a directory with the hostname if it doesn't exist
-            output_directory = f"output_haren_{date}/{hostname}_output"
+            output_directory = f"output_{date}/{hostname}_output"
             if not os.path.exists(output_directory):
                 os.makedirs(output_directory)
             
