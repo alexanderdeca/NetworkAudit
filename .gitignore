@@ -3,6 +3,7 @@ telio-audit.code-workspace
 test.py
 testscrapli.py
 *.csv
+!hosts_template.csv
 old/
 output*/
 *.xlsx

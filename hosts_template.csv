@@ -1,0 +1,5 @@
+ip_address,name,platform
+10.1.1.1, HOST1,iosxe
+10.1.1.2,HOST2,iosxe
+10.1.1.1,HOST3,iosxe
+
