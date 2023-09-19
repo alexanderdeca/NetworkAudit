@@ -2,6 +2,8 @@
 
 This repository contains a collection of Python scripts for network automation tasks. These scripts utilize the `scrapli` library for SSH connections, `networkx` for network topology visualization, and various other libraries for parsing and processing data from network devices.
 
+Input hosts file template is added to the repository.
+
 ## Prerequisites
 
 Make sure you have Python 3 installed. You can install the required libraries using the provided `requirements.txt` file:
