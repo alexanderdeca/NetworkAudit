@@ -6,6 +6,7 @@
 # device and saves the output to txt file
 # input csv file format is ip_address,username,password,name,platform
 
+import os
 import csv
 import logging
 import os
@@ -15,8 +16,20 @@ from datetime import datetime
 now = datetime.now()
 date = now.strftime("%Y-%m-%d")
 
+# Constants
+SSH_PORT = int(os.getenv("SSH_PORT", 22))
+
+# Environment Variables 
+SSH_USER = os.getenv("SSH_USER")
+SSH_PWD = os.getenv("SSH_PWD")
+
 logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+# Check if all required environment variables are set
+if not all([SSH_USER, SSH_PWD, SSH_PORT]):
+    logger.error("One or more environment variables are not set")
+    exit(1)
 
 # Define the CSV file path containing the device details
 csv_file = 'hosts.csv'
@@ -47,8 +60,8 @@ for device in devices:
     try:
         conn = driver(
             host=device["ip_address"],
-            auth_username=device["username"],
-            auth_password=device["password"],
+            auth_username=SSH_USER,
+            auth_password=SSH_PWD,
             auth_strict_key=False,
             ssh_config_file="~/.ssh/config",
         )
@@ -58,7 +71,7 @@ for device in devices:
             hostname = device["name"]
             
             # Create a directory with the hostname if it doesn't exist
-            output_directory = f"output_{date}/{hostname}_output"
+            output_directory = f"output_haren_{date}/{hostname}_output"
             if not os.path.exists(output_directory):
                 os.makedirs(output_directory)
             

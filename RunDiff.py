@@ -10,7 +10,9 @@ import difflib
 import logging
 
 # Set up logging
-logging.basicConfig(filename='diff_script.log', level=logging.ERROR)
+
+logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 def perform_diff(file1_path, file2_path, diff_directory):
     """Performs diff between two files and saves the differences"""
@@ -34,7 +36,7 @@ def perform_diff(file1_path, file2_path, diff_directory):
             for line in diff:
                 output_file.write(line)
     except Exception as e:
-        logging.error(f"Error occurred while processing files: {str(e)}")
+        logger.error(f"Error occurred while processing files: {str(e)}")
 
 def compare_directories(directory1, directory2, parent_diff_directory):
     """Compares files in two directories"""
@@ -42,7 +44,7 @@ def compare_directories(directory1, directory2, parent_diff_directory):
         files1 = os.listdir(directory1)
         files2 = os.listdir(directory2)
     except Exception as e:
-        logging.error(f"Error occurred while accessing directories: {str(e)}")
+        logger.error(f"Error occurred while accessing directories: {str(e)}")
         return
 
     # Create the diff directory for the current directories
@@ -57,15 +59,15 @@ def compare_directories(directory1, directory2, parent_diff_directory):
         elif os.path.isfile(file1_path) and os.path.isfile(file2_path):
             perform_diff(file1_path, file2_path, diff_directory)
         else:
-            logging.error(f"File '{file}' is not present in both directories or is of different types.")
+            logger.error(f"File '{file}' is not present in both directories or is of different types.")
 
     for file in files2:
         if file not in files1:
-            logging.error(f"File '{file}' is only present in directory 2.")
+            logger.error(f"File '{file}' is only present in directory 2.")
 
 # Main directories to compare
-main_directory1 = 'output_2023-07-25'
-main_directory2 = 'output_2023-07-25-8h'
+main_directory1 = 'output_haren_2023-09-13'
+main_directory2 = 'output_haren_2023-09-14'
 
 # Directory to store the diff files
 parent_diff_directory = 'diff'

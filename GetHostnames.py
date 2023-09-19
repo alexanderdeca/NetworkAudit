@@ -5,15 +5,28 @@
 # this script fetches the correct hostname and updates the input csv file
 # input csv file format is ip_address,username,password,name,platform
 
+import os
 import csv
 import logging
 from scrapli.driver.core import IOSXEDriver, NXOSDriver, IOSXRDriver
 
+# Constants
+SSH_PORT = int(os.getenv("SSH_PORT", 22))
+
+# Environment Variables 
+SSH_USER = os.getenv("SSH_USER")
+SSH_PWD = os.getenv("SSH_PWD")
+
 logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# Check if all required environment variables are set
+if not all([SSH_USER, SSH_PWD, SSH_PORT]):
+    logger.error("One or more environment variables are not set")
+    exit(1)
+
 # Define the CSV file path containing the device details
-csv_file = 'hosts.csv'
+csv_file = 'hosts_dendermonde.csv'
 
 # Create a list to store the devices
 devices = []
@@ -42,8 +55,8 @@ with open(csv_file, 'r') as file:
         try:
             conn = driver(
                 host=device["ip_address"],
-                auth_username=device["username"],
-                auth_password=device["password"],
+                auth_username=SSH_USER,
+                auth_password=SSH_PWD,
                 auth_strict_key=False,
                 ssh_config_file="~/.ssh/config",
             )

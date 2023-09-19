@@ -9,11 +9,24 @@ import logging
 from scrapli.driver.core import IOSXEDriver, NXOSDriver, IOSXRDriver
 import networkx as nx
 import matplotlib.pyplot as plt
+import os
 from ntc_templates.parse import parse_output
 
+
+# Constants
+SSH_PORT = int(os.getenv("SSH_PORT", 22))
+
+# Environment Variables 
+SSH_USER = os.getenv("SSH_USER")
+SSH_PWD = os.getenv("SSH_PWD")
+
 logging.basicConfig(filename='error.log', level=logging.ERROR, format='%(asctime)s - %(levelname)s - %(message)s')
-# logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Check if all required environment variables are set
+if not all([SSH_USER, SSH_PWD, SSH_PORT]):
+    logger.error("One or more environment variables are not set")
+    exit(1)
 
 def establish_connection(device):
     driver = None
@@ -30,8 +43,8 @@ def establish_connection(device):
     try:
         conn = driver(
             host=device["ip_address"],
-            auth_username=device["username"],
-            auth_password=device["password"],
+            auth_username=SSH_USER,
+            auth_password=SSH_PWD,
             auth_strict_key=False,
             ssh_config_file="~/.ssh/config",
         )
@@ -69,7 +82,7 @@ def get_neighbors(device):
         parsed_output = parse_output(platform=ntc, command="show cdp neighbors", data=response_neighbors)
         if parsed_output is not None:
             for item in parsed_output:
-                print(item)
+                # print(item)
                 neighbors.append(item)
         else:
             logger.warning("No neighbor information found.")
