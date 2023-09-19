@@ -2,6 +2,9 @@
 
 # created by Alexander Deca - Deca Consulting 06/07/2023
 # please note there is a requirements file -> pip install -r requirements.txt
+# this script is a utility for network administrators to process and analyze the MAC addresses learned on a Cisco device
+# and by consolidating them into a single CSV file. It uses specific libraries (ntc_templates and manuf) to facilitate 
+# parsing and MAC address vendor lookup.
 
 import os
 import csv
