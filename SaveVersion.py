@@ -36,7 +36,7 @@ def review_directory(directory, output_file):
         # Create a CSV file for writing
         with open(output_file, "w", newline="") as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow(["File", "Hostname", "Platform", "Software Version", "Software Image"])
+            writer.writerow(["hostname", "type", "software version", "software image"])
 
             # Iterate over subdirectories in the given directory
             for root, dirs, files in os.walk(directory):
@@ -50,7 +50,7 @@ def review_directory(directory, output_file):
                                 # Parse the show command output
                                 hostname, platform, software_version, software_image = parse_cisco_show_output(output)
                                 # Write the extracted information to the CSV file
-                                writer.writerow([file, hostname, platform, software_version, software_image])
+                                writer.writerow([hostname, platform, software_version, software_image])
                             logger.info(f'Processed file {file} successfully.')
                     except Exception as e:
                         logger.error(f'Failed to process file {file}: {e}')
@@ -60,7 +60,7 @@ def review_directory(directory, output_file):
         raise
 
 # Specify the directory path containing the subdirectories with show command output
-directory_path = "output_2023-07-25"
+directory_path = "output_2023-09-22"
 
 # Specify the output CSV file path
 output_csv_file = "SaveVersion.csv"

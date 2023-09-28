@@ -68,7 +68,7 @@ for device in devices:
         conn.open()
         if conn.isalive():
             # Get the hostname from the device["name"]
-            hostname = device["name"]
+            hostname = device["hostname"]
             
             # Create a directory with the hostname if it doesn't exist
             output_directory = f"output_{date}/{hostname}_output"
@@ -93,8 +93,8 @@ for device in devices:
                     else:
                         output_file.write(command_result.result)
             
-                logger.info(f"Commands executed successfully for {device['name']}. Output saved in {output_directory}.")
+                logger.info(f"Commands executed successfully for {device['hostname']}. Output saved in {output_directory}.")
         else:
-            logger.error(f"Connection to {device['name']} is not alive.")
+            logger.error(f"Connection to {device['hostname']} is not alive.")
     except Exception as e:
         logger.error(f"Error occurred while establishing connection with {device['ip_address']}: {str(e)}")

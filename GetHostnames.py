@@ -79,7 +79,7 @@ with open(csv_file, 'r') as file:
                 conn.close()
 
                 # Update the input CSV file with the hostname
-                fieldnames = ['ip_address', 'username', 'password', 'name', 'platform']
+                fieldnames = ['ip_address', 'username', 'password', 'hostname', 'platform']
                 with open(csv_file, 'w', newline='') as file:
                     writer = csv.DictWriter(file, fieldnames=fieldnames)
                     writer.writeheader()

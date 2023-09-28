@@ -10,11 +10,14 @@ from scrapli.driver.core import IOSXEDriver, NXOSDriver, IOSXRDriver
 import networkx as nx
 import matplotlib.pyplot as plt
 import os
+import PIL
 from ntc_templates.parse import parse_output
-
 
 # Constants
 SSH_PORT = int(os.getenv("SSH_PORT", 22))
+ROUTER = ['ISR4331B']
+ASWITCH = ['WSC3650','C9300L24','C9300L48']
+CSWITCH = ['WSC3850']
 
 # Environment Variables 
 SSH_USER = os.getenv("SSH_USER")
@@ -27,6 +30,25 @@ logger = logging.getLogger(__name__)
 if not all([SSH_USER, SSH_PWD, SSH_PORT]):
     logger.error("One or more environment variables are not set")
     exit(1)
+
+# Create dictionary from the different platform types for using the correct image for graph nodes
+
+platform = {value: 'aswitch' for value in ASWITCH}
+platform.update({value: 'cswitch' for value in CSWITCH})
+platform.update({value: 'router' for value in ROUTER})
+
+# Image URLs for graph nodes
+
+icons = {
+    "router": "icons/router.png",
+    "cswitch": "icons/core.png",
+    "aswitch": "icons/switch.png",
+    "PC": "icons/pc.png",
+}
+
+# Load images defined for graph nodes
+
+images = {k: PIL.Image.open(fname) for k, fname in icons.items()}
 
 def establish_connection(device):
     driver = None
@@ -82,7 +104,6 @@ def get_neighbors(device):
         parsed_output = parse_output(platform=ntc, command="show cdp neighbors", data=response_neighbors)
         if parsed_output is not None:
             for item in parsed_output:
-                # print(item)
                 neighbors.append(item)
         else:
             logger.warning("No neighbor information found.")
@@ -101,11 +122,21 @@ def build_network_topology(devices):
         neighbors = get_neighbors(device)
 
         # Extract the hostname portion of the device name and convert to lowercase
-        hostname = device["name"].split(".")[0].lower()
+        hostname = device["hostname"].split(".")[0].lower()
 
+        # Extract the type of the device and convert to lowercase
+        type_device = device["type"].replace("-", "")
+
+        if platform[type_device] == 'cswitch':
+            icon = "cswitch"
+        elif platform[type_device] == 'aswitch':
+            icon = "aswitch"
+        else:
+            icon = "router"
+            
         # Add the device to the graph if it hasn't been added before
         if hostname not in added_devices:
-            G.add_node(hostname)
+            G.add_node(hostname,image=images[icon])
             added_devices.add(hostname)
 
         for neighbor in neighbors:
@@ -116,7 +147,7 @@ def build_network_topology(devices):
 
             # Add the edge between devices if the remote device hasn't been added before
             if remote_device not in added_devices:
-                G.add_node(remote_device)
+                G.add_node(remote_device,image=images[icon])
                 added_devices.add(remote_device)
 
             # Check if the edge already exists, if yes, append the interface to the existing list
