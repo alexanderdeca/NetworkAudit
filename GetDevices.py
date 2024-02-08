@@ -17,7 +17,7 @@ from ntc_templates.parse import parse_output
 SSH_PORT = int(os.getenv("SSH_PORT", 22))
 ROUTER = ['ISR4331B']
 ASWITCH = ['WSC3650','C9300L24','C9300L48']
-CSWITCH = ['WSC3850']
+CSWITCH = ['WSC3850','C930024S']
 
 # Environment Variables 
 SSH_USER = os.getenv("SSH_USER")
@@ -177,7 +177,7 @@ def visualize_network_topology(network_topology):
 
 def main():
     devices = []
-    with open("hosts.csv", "r") as file:
+    with open("hosts_brugge.csv", "r") as file:
         csv_reader = csv.DictReader(file)
         for row in csv_reader:
             devices.append(row)

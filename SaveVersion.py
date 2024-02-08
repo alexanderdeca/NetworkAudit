@@ -60,7 +60,7 @@ def review_directory(directory, output_file):
         raise
 
 # Specify the directory path containing the subdirectories with show command output
-directory_path = "output_2023-09-22"
+directory_path = "output_2023-10-29"
 
 # Specify the output CSV file path
 output_csv_file = "SaveVersion.csv"

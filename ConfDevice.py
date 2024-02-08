@@ -3,9 +3,10 @@
 # created by Alexander Deca - Deca Consulting 06/07/2023
 # please note there is a requirements file -> pip install -r requirements.txt
 # this script iterates over a # of commands that will be executed on the network
-# device and saves the output to txt file
+# device and saves the configuration.
 # input csv file format is ip_address,name,platform
 
+import time
 import os
 import csv
 import logging
@@ -32,7 +33,7 @@ if not all([SSH_USER, SSH_PWD, SSH_PORT]):
     exit(1)
 
 # Define the CSV file path containing the device details
-csv_file = 'hosts_brugge.csv'
+csv_file = 'hosts_test.csv'
 
 # Create a list to store the devices
 devices = []
@@ -69,32 +70,33 @@ for device in devices:
         if conn.isalive():
             # Get the hostname from the device["name"]
             hostname = device["hostname"]
-            
-            # Create a directory with the hostname if it doesn't exist
-            output_directory = f"output_{date}/{hostname}_output"
-            if not os.path.exists(output_directory):
-                os.makedirs(output_directory)
-            
+
+            # # Enter configuration mode
+            # conn.send_command("configure terminal")
+
             # Read the commands from the CSV file
             commands = []
-            with open('commands_brugge.csv', 'r') as commands_file:
+            with open('conf-commands.csv', 'r') as commands_file:
                 commands_reader = csv.reader(commands_file)
                 header = next(commands_reader)
                 for command_row in commands_reader:
                     commands.append(command_row[0])
-          
-            # Execute each command and save the output or error message
+
+            # Execute each command in configuration mode
             for command in commands:
-                command_result = conn.send_command(command)
-                output_filename = f"{output_directory}/{command.replace(' ', '_')}.txt"
-                with open(output_filename, 'w') as output_file:
-                    if command_result.failed:
-                        output_file.write(f"Error executing command: {command_result.result}")
-                    else:
-                        output_file.write(command_result.result)
-            
-                logger.info(f"Commands executed successfully for {device['hostname']}. Output saved in {output_directory}.")
+                # Send the command
+                conn.send_config(command)
+
+            # Exit configuration mode
+            conn.send_command("end")
+
+            # Save configuration
+            conn.send_command("write memory")
+
+            logger.info(
+                f"Configuration completed successfully for {device['hostname']}.")
         else:
             logger.error(f"Connection to {device['hostname']} is not alive.")
     except Exception as e:
-        logger.error(f"Error occurred while establishing connection with {device['ip_address']}: {str(e)}")
+        logger.error(
+            f"Error occurred while configuring {device['hostname']}: {str(e)}")

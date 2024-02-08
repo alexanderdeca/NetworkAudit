@@ -26,7 +26,7 @@ if not all([SSH_USER, SSH_PWD, SSH_PORT]):
     exit(1)
 
 # Define the CSV file path containing the device details
-csv_file = 'hosts_dendermonde.csv'
+csv_file = 'hosts_arlon.csv'
 
 # Create a list to store the devices
 devices = []
@@ -73,13 +73,13 @@ with open(csv_file, 'r') as file:
                 hostname = lines[hostname_line].split()[1]
 
                 # Update the 'hostname' field in the device dictionary
-                device['name'] = hostname
+                device['hostname'] = hostname
 
                 # Close the SSH session
                 conn.close()
 
                 # Update the input CSV file with the hostname
-                fieldnames = ['ip_address', 'username', 'password', 'hostname', 'platform']
+                fieldnames = ['ip_address',  'hostname', 'platform', 'type']
                 with open(csv_file, 'w', newline='') as file:
                     writer = csv.DictWriter(file, fieldnames=fieldnames)
                     writer.writeheader()
